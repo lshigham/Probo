@@ -2,7 +2,7 @@
 from probo.marketData import MarketData
 from probo.payoff import VanillaPayoff, call_payoff
 from probo.pricingEngine import BinomialPricingEngine, EuropeanBinomialPricer
-from probo. import Facade
+from probo import Facade
 
 
 def main():
