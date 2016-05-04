@@ -24,7 +24,7 @@ def main():
     """Calculate the Price"""
     the_option = OptionFacade(call, binom_engine, data)
     price = the_option.price()
-    print("The Call Price is {0:.3f}".format(price))
+    print("The European Binomial Call Price is {0:.3f}".format(price))
     
     """Set up Black Scholes Price!"""
     the_call = VanillaPayoff(expiry, strike, call_payoff)
