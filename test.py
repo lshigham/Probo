@@ -27,7 +27,8 @@ def main():
     print("The Call Price is {0:.3f}".format(price))
     
     """Set up Black Scholes Price!"""
-    the_call = VanillaPayoff("call", BlackScholesPricer)
+    the_call = VanillaPayoff(expiry, strike, call_payoff)
+    BS_engine = BlackScholesPricingEngine("call", BlackScholesPricer)
     BS_option = OptionFacade(the_call, BS_engine, data)
     BS_price = BS_option.price()
     print("The call price via BLack Scholes is:  {0:.3f}".format(BS_price))
