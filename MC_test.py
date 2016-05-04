@@ -1,7 +1,8 @@
-from marketdata import MarketData
-from payoff import VanillaPayoff, call_payoff
-from engine import MonteCarloPricingEngine, Naive_Monte_Carlo_Pricer
-from facade import OptionFacade
+
+from probo.marketdata import MarketData
+from probo.payoff import VanillaPayoff, call_payoff
+from probo.engine import MonteCarloPricingEngine, Naive_Monte_Carlo_Pricer
+from probo.facade import OptionFacade
 
 def main():
     strike = 40.0
