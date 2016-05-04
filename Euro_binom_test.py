@@ -1,7 +1,7 @@
-from marketdata import MarketData
-from payoff import VanillaPayoff, call_payoff
-from engine import BinomialPricingEngine, EuropeanBinomialPricer
-from facade import OptionFacade
+from probo.marketdata import MarketData
+from probo.payoff import VanillaPayoff, call_payoff
+from probo.engine import BinomialPricingEngine, EuropeanBinomialPricer
+from probo.facade import OptionFacade
 
 def main():
     strike = 40.0
