@@ -1,10 +1,7 @@
-from Facade import * #To change to exact
-
 class MarketData(object):
     """A class to encapsulate market data variables.
-
        Especially to be passed to pricing engines.
-    """
+       This can be made to pass on 'live' data"""
 
     def __init__(self, rate, spot, volatility, dividend):
         self.__rate = rate

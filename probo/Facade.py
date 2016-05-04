@@ -6,23 +6,6 @@ class OptionFacade(object, metaclass=abc.ABCMeta):
 
     """
 
-    @property
-    @abc.abstractmethod
-    def expiry(self):
-        """Get the expiry date."""
-        pass
-
-    @expiry.setter
-    @abc.abstractmethod
-    def expiry(self, newExpiry):
-        """Set the expiry date."""
-        pass
-    
-    @abc.abstractmethod
-    def payoff(self):
-        """Get the option's payoff value."""
-        pass
-
     def __init__(self, option, engine, data):
         self.option = option
         self.engine = engine
