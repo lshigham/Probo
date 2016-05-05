@@ -195,13 +195,10 @@ def Stratified_Monte_Carlo_Pricer(engine, option, data):
         payoff_t[i] = option.payoff(spot_t[i])
         
     price = discount_rate * payoff_t.mean()
-<<<<<<< HEAD
-    standard_error = payoff_t.std() / np.sqrt(replications)
-    print("The standard error for Control Variate Monte Carlo is: {}".format(standard_error))
-=======
+
     standard_error = payoff_t.std(dtype = np.float64) / np.sqrt(replications)
     print("Standard error is: {0:3f}".format(standard_error))
->>>>>>> 4f294ed94a39fc6b3a20a46d1e610693bf04a434
+
     
     return price
     
