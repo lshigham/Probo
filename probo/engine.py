@@ -164,8 +164,10 @@ def Naive_Monte_Carlo_Pricer(engine, option, data):
         
         payoff_t += option.payoff(spot_t)
  
+    standard_error = payoff_t.std() / np.sqrt(replications)
     payoff_t /= replications
     price = discount_rate * payoff_t
+    print("The standard error for Control Variate Monte Carlo is: {}".format(standard_error))
     
     return price
     
@@ -193,7 +195,8 @@ def Stratified_Monte_Carlo_Pricer(engine, option, data):
         payoff_t[i] = option.payoff(spot_t[i])
         
     price = discount_rate * payoff_t.mean()
-    standard_error = payoff_t.std(dtype = np.float64) / np.sqrt(replications)
+    standard_error = payoff_t.std() / np.sqrt(replications)
+    print("The standard error for Control Variate Monte Carlo is: {}".format(standard_error))
     
     return price
     
@@ -218,6 +221,8 @@ def Antithetic_Monte_Carlo_Pricer(engine, option, data):
         payoff_t_antithetic[i] = option.payoff(spot_t_antithetic[i])
     
     price = discount_rate * payoff_t_antithetic.mean()
+    stderr = payoff_t_antithetic.std() / np.sqrt(replications)
+    print("The standard error for Control Variate Monte Carlo is: {}".format(stderr))
     
     return price
 
@@ -256,7 +261,8 @@ def ControlVariatePricer(engine, option, data):
         cash_flow_t[j] = option.payoff(spot_t) + beta * convar
 
     price = np.exp(-rate * expiry) * cash_flow_t.mean()
-    #stderr = cash_flow_t.std() / np.sqrt(replications)
+    stderr = cash_flow_t.std() / np.sqrt(replications)
+    print("The standard error for Control Variate Monte Carlo is: {}".format(stderr))
     return price
 
 # Do I want to make a path dependent class?

@@ -16,8 +16,8 @@ def main():
     dividend = 0.0
     
     """Set up the Pricing Engine!"""
-    time_steps = 5
-    replications =1000
+    time_steps = 50
+    replications =100
     
     call = VanillaPayoff(expiry, strike, call_payoff)
     data = MarketData(rate, spot, volatility, dividend)
@@ -48,7 +48,7 @@ def main():
     strat_mc_engine = MonteCarloPricingEngine(time_steps, replications, Stratified_Monte_Carlo_Pricer)
     strat_option = OptionFacade(the_call, strat_mc_engine, the_data)
     strat_price = strat_option.price()
-    print("The Call Price is {0:.3f}".format(strat_price))
+    print("The Stratified Monte Carlo Call Price is {0:.3f}".format(strat_price))
     
     """Control Variate Monte Carlo"""
     convar_mc_engine = MonteCarloPricingEngine(time_steps, replications, ControlVariatePricer)
