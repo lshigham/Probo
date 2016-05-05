@@ -194,6 +194,7 @@ def Stratified_Monte_Carlo_Pricer(engine, option, data):
         
     price = discount_rate * payoff_t.mean()
     standard_error = payoff_t.std(dtype = np.float64) / np.sqrt(replications)
+    print("Standard error is: {0:3f}".format(standard_error))
     
     return price
     
