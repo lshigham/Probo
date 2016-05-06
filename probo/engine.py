@@ -165,7 +165,7 @@ def Naive_Monte_Carlo_Pricer(engine, option, data):
  
     standard_error = payoff_t.std() / np.sqrt(replications)
     price = discount_rate * payoff_t.mean()
-    print("The standard error for Control Variate Monte Carlo is: {}".format(standard_error))
+    print("The standard error for Naive Monte Carlo is: {}".format(standard_error))
     
     return price
     
@@ -195,7 +195,7 @@ def Stratified_Monte_Carlo_Pricer(engine, option, data):
     price = discount_rate * payoff_t.mean()
 
     standard_error = payoff_t.std(dtype = np.float64) / np.sqrt(replications)
-    print("Standard error is: {0:3f}".format(standard_error))
+    print("Standard error for the stratified Monte Carlo Call is: {0:3f}".format(standard_error))
 
     
     return price
@@ -222,7 +222,7 @@ def Antithetic_Monte_Carlo_Pricer(engine, option, data):
     
     price = discount_rate * payoff_t_antithetic.mean()
     stderr = payoff_t_antithetic.std() / np.sqrt(replications)
-    print("The standard error for Control Variate Monte Carlo is: {}".format(stderr))
+    print("The standard error for Antithetic Monte Carlo is: {}".format(stderr))
     
     return price
 
@@ -265,13 +265,15 @@ def ControlVariatePricer(engine, option, data):
     print("The standard error for Control Variate Monte Carlo is: {}".format(stderr))
     return price
 
-# Do I want to make a path dependent class?
-# If so, what will I want to include?
 
-
-
-##### Extensions  
+def GeometricAsian(spot, volatility, strike, rate, expiry, time_steps):
+    vol_hat = volatility * np.sqrt((2.0 * time_steps + 1.0) / (6.0 * (time_steps + 1)))
+    rho = 0.5 * (rate - 0.5 *(volatility * volatility) + vol_hat * vol_hat)
+    d1 = (np.log(spot / strike) + (rho + 0.5 *vol_hat * vol_hat) * expiry) / (vol_hat * np.sqrt(expiry))
+    d2 = d1 - volatility * np.sqrt(expiry)
+    G_Asian = np.exp(-rate * expiry) * (spot * np.exp(rho * expiry) * norm.cdf(d1) - strike * norm.cdf(d2))
   
+  #NOt finished
 def Asian_Option_Pricer(engine, option, data):
     expiry = option.expiry
     strike = option.strike
@@ -280,6 +282,7 @@ def Asian_Option_Pricer(engine, option, data):
     discount_rate = np.exp(-rate * expiry)
     delta_t = expiry
     z = np.random.normal(size = steps)
+    beta = -1.0
     
     nudt = (rate - 0.5 * volatility * volatility) * delta_t
     sidt = volatility * np.sqrt(delta_t)    
