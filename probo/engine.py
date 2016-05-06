@@ -151,22 +151,20 @@ def Naive_Monte_Carlo_Pricer(engine, option, data):
     time_steps = engine.time_steps
     replications = engine.replications
     discount_rate = np.exp(-rate * expiry)
-    delta_t = expiry / time_steps
-    z = np.random.normal(size = time_steps)
+    delta_t = expiry
+    z = np.random.normal(size = replications)
     
-    nudt = (rate - 0.5 * volatility * volatility) * expiry
+    nudt = (rate - dividend - 0.5 * volatility * volatility) * expiry
     sidt = volatility * np.sqrt(expiry)
     
     spot_t = np.zeros((replications, ))
-    payoff_t = 0.0
-    for i in range(replications):
-        spot_t = spot * np.exp(nudt + sidt * z[i])
+    payoff_t = np.zeros((replications, ))
+    spot_t = spot * np.exp(nudt + sidt * z)
         
-        payoff_t += option.payoff(spot_t)
+    payoff_t = option.payoff(spot_t)
  
     standard_error = payoff_t.std() / np.sqrt(replications)
-    payoff_t /= replications
-    price = discount_rate * payoff_t
+    price = discount_rate * payoff_t.mean()
     print("The standard error for Control Variate Monte Carlo is: {}".format(standard_error))
     
     return price
