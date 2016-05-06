@@ -25,3 +25,6 @@ def main():
     AA_option = OptionFacade(call, Arithmetic_A_engine, data)
     AA_price = AA_option.price()
     print("The call price for an Arithmetic Asian Call Option using a Geometric Asian control Variate is:  {0:.3f}".format(AA_price))
+    
+if __name__ == "__main__":
+    main()

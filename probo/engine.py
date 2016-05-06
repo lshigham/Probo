@@ -1,6 +1,7 @@
 import abc
 import enum
 import numpy as np
+from numpy import matlib
 from scipy.stats import binom, norm, mstats
 
 class PricingEngine(object, metaclass=abc.ABCMeta):
@@ -283,14 +284,14 @@ def Asian_Option_Pricer(engine, option, data):
     replications = engine.replications
     discount_rate = np.exp(-rate * expiry)
     delta_t = expiry / time_steps
-    z = np.random.normal(size = (replications,time_steps))
+    z = np.random.normal(size = (replications, ))
     beta = -1.0    
     nudt = (rate - 0.5 * volatility * volatility) * delta_t
     sidt = volatility * np.sqrt(delta_t)    
 
     """Path Dependent Portion"""
     expected_return = rate - 0.5 * (volatility * volatility)
-    deterministic = np.matlib.repmat(expected_return * delta_t [1:time_steps], 1, replications)
+    deterministic = np.matlib.repmat(expected_return * delta_t * time_steps, 1, replications)
     stochastic = volatility * np.sqrt(delta_t) * np.cumsum(z)
     spots = np.matlib.repmat(spot, 1, replications)
     sim_paths = spots * np.exp(deterministic + stochastic)
@@ -299,17 +300,19 @@ def Asian_Option_Pricer(engine, option, data):
     """Control Variate Portion"""
     divisor = 1 / (time_steps + 1)
     exact_G_Asian = GeometricAsian(spot, volatility, strike, rate, expiry, time_steps)
-    Geo_Price = np.zeros((time_steps, ))
+    pathVector = np.zeros((replications, ))
+    Geo_Price = np.zeros((replications, ))
     spot_t = np.zeros((replications, ))
     payoff_t = np.zeros((replications, ))
     price = np.zeros((replications, ))
 
+
     for i in range(replications):
-        pathVector = sim_paths[:i]
-        spot_t[i] = np.sum(pathVector) * divisor
-        Geo_Price = discount_rate * np.maximum(mstats.gmean(pathVector) - strike, 0)
-        payoff_t[i] = discount_rate * option.payoff(spot_t)        
-        price[i] = payoff_t + beta * (Geo_Price - exact_G_Asian)
+        pathVector = sim_paths
+        spot_t[i] = np.sum(pathVector[i]) * divisor
+        Geo_Price = discount_rate * np.maximum(mstats.gmean(pathVector[i]) - strike, 0)
+        payoff_t[i] = discount_rate * option.payoff(spot_t[i])        
+        price[i] = payoff_t[i] + beta * (Geo_Price[i] - exact_G_Asian)
         
 
     stderr = price.std() / np.sqrt(replications)
