@@ -87,8 +87,8 @@ def sSqrt_payoff(option, spot):
 def sFrac_payoff(option, spot):
     return spot ** -1.0
     
-    # Needs edits 
-#class Exotic_Payoff(Facade.OptionFacade):
+
+class ExoticPayoff(Payoff):
     def __init__(self, expiry, strike, payoff):
         self.__expiry = expiry
         self.__strike = strike
@@ -114,7 +114,7 @@ def sFrac_payoff(option, spot):
         return self.__payoff(self, spot)
         
 def arithmetic_asian_call_payoff(option, spot):
-    pass
+    return maximum(spot - option.strike, 0)
 
 def arithmetic_asian_put_payoff(option, spot):
     pass
