@@ -74,3 +74,5 @@ def main():
     strat_price3 = strat_option3.price()
     print("The Stratified Monte Carlo Call Price is {0:.3f}".format(strat_price3))
 
+if __name__ == "__main__":
+    main()
