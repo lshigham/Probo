@@ -9,14 +9,14 @@ def main():
     expiry = .25 
     
     """Set up the Market Data!"""
-    spot = 41.0
+    spot = 40.0
     rate = 0.08
     volatility = 0.30
     dividend = 0.0
     
     """Set up the Pricing Engine!"""
-    time_steps = 50
-    replications =100
+    time_steps = 10
+    replications =10000
     
     call = ExoticPayoff(expiry, strike, arithmetic_asian_call_payoff)
     data = MarketData(rate, spot, volatility, dividend)

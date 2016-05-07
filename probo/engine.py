@@ -295,27 +295,18 @@ def Asian_Option_Pricer(engine, option, data):
     stochastic = volatility * np.sqrt(delta_t) * np.cumsum(z)
     spots = np.matlib.repmat(spot, 1, replications)
     sim_paths = spots * np.exp(deterministic + stochastic)
-    
-    
-    """Control Variate Portion"""
-    divisor = 1 / (time_steps + 1)
+
+    spot_t = np.mean(sim_paths, 1)
+    payoff_t = discount_rate * option.payoff(spot_t)
+    payoff_mean = np.mean(payoff_t)
     exact_G_Asian = GeometricAsian(spot, volatility, strike, rate, expiry, time_steps)
-    pathVector = np.zeros((replications, ))
-    Geo_Price = np.zeros((replications, ))
-    spot_t = np.zeros((replications, ))
-    payoff_t = np.zeros((replications, ))
-    price = np.zeros((replications, ))
+    G_average = np.exp((1/(time_steps +1)) * sum(np.log(sim_paths),1))
+    payoff_gavg = discount_rate * np.maximum(G_average - strike, 0)
+    convar_price = payoff_t + exact_G_Asian - payoff_gavg
 
+    price = np.mean(convar_price)
+    stderr = np.std(convar_price)
 
-    for i in range(replications):
-        pathVector = sim_paths
-        spot_t[i] = np.sum(pathVector[i]) * divisor
-        Geo_Price = discount_rate * np.maximum(mstats.gmean(pathVector[i]) - strike, 0)
-        payoff_t[i] = discount_rate * option.payoff(spot_t[i])        
-        price[i] = payoff_t[i] + beta * (Geo_Price[i] - exact_G_Asian)
-        
-
-    stderr = price.std() / np.sqrt(replications)
     print("The standard error for Control Variate Monte Carlo simulation for an Arithmetic Asian Call option is: {}".format(stderr))
     
     return price
