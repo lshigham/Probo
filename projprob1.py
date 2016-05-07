@@ -16,8 +16,8 @@ def main():
     dividend = 0.0
     
     """Set up the Pricing Engine!"""
-    time_steps = 50
-    replications =100000
+    time_steps = 250
+    replications =1000
     
     call = VanillaPayoff(expiry, strike, call_payoff)
     data = MarketData(rate, spot, volatility, dividend)

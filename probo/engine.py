@@ -164,7 +164,9 @@ def Naive_Monte_Carlo_Pricer(engine, option, data):
     spot_t = spot * np.exp(nudt + sidt * z)
         
     payoff_t = option.payoff(spot_t)
- 
+    
+    title("Basic Income")
+    hist(z, bins=50)
     standard_error = payoff_t.std() / np.sqrt(replications)
     price = discount_rate * payoff_t.mean()
     print("The standard error for Naive Monte Carlo is: {}".format(standard_error))
@@ -195,7 +197,7 @@ def Stratified_Monte_Carlo_Pricer(engine, option, data):
         payoff_t[i] = option.payoff(spot_t[i])
         
     price = discount_rate * payoff_t.mean()
-
+    #hist(z, bins=50)
     standard_error = payoff_t.std(dtype = np.float64) / np.sqrt(replications)
     print("Standard error for the stratified Monte Carlo Call is: {0:3f}".format(standard_error))
 
@@ -224,7 +226,7 @@ def Antithetic_Monte_Carlo_Pricer(engine, option, data):
     
     price = discount_rate * payoff_t_antithetic.mean()
     stderr = payoff_t_antithetic.std() / np.sqrt(replications)
-    hist(payoff_t_antithetic, bins=50)
+    #hist(z, bins=50)
     print("The standard error for Antithetic Monte Carlo is: {}".format(stderr))
     
     return price
@@ -263,6 +265,7 @@ def ControlVariatePricer(engine, option, data):
 
         cash_flow_t[j] = option.payoff(spot_t) + beta * convar
 
+    #hist(z, bins=50)
     price = np.exp(-rate * expiry) * cash_flow_t.mean()
     stderr = cash_flow_t.std() / np.sqrt(replications)
     print("The standard error for Control Variate Monte Carlo is: {}".format(stderr))
@@ -277,7 +280,7 @@ def GeometricAsian(spot, volatility, strike, rate, expiry, time_steps):
     G_Asian = np.exp(-rate * expiry) * (spot * np.exp(rho * expiry) * norm.cdf(d1) - strike * norm.cdf(d2))
     return G_Asian
   
-  #NOt finished
+
 def Asian_Option_Pricer(engine, option, data):
     expiry = option.expiry
     strike = option.strike
@@ -300,15 +303,14 @@ def Asian_Option_Pricer(engine, option, data):
 
     spot_t = np.mean(sim_paths, 1)
     payoff_t = discount_rate * option.payoff(spot_t)
-    payoff_mean = np.mean(payoff_t)
     exact_G_Asian = GeometricAsian(spot, volatility, strike, rate, expiry, time_steps)
-    G_average = np.exp((1/(time_steps +1)) * sum(np.log(sim_paths),1))
+    G_average = np.exp((1/(time_steps +1)) * np.sum(np.log(sim_paths),1))
     payoff_gavg = discount_rate * np.maximum(G_average - strike, 0)
     convar_price = payoff_t + exact_G_Asian - payoff_gavg
 
     price = np.mean(convar_price)
     stderr = np.std(convar_price)
-    hist(convar_price, bins=50)
+    #hist(z, bins=50)
 
     print("The standard error for Control Variate Monte Carlo simulation for an Arithmetic Asian Call option is: {}".format(stderr))
     
