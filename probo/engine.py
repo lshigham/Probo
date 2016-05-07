@@ -165,7 +165,7 @@ def Naive_Monte_Carlo_Pricer(engine, option, data):
         
     payoff_t = option.payoff(spot_t)
     
-    title("Basic Income")
+    title("Naive Monte Carlo")
     hist(z, bins=50)
     standard_error = payoff_t.std() / np.sqrt(replications)
     price = discount_rate * payoff_t.mean()
@@ -197,7 +197,8 @@ def Stratified_Monte_Carlo_Pricer(engine, option, data):
         payoff_t[i] = option.payoff(spot_t[i])
         
     price = discount_rate * payoff_t.mean()
-    #hist(z, bins=50)
+    title("Stratified Monte Carlo")
+    hist(z, bins=50)
     standard_error = payoff_t.std(dtype = np.float64) / np.sqrt(replications)
     print("Standard error for the stratified Monte Carlo Call is: {0:3f}".format(standard_error))
 
@@ -226,7 +227,8 @@ def Antithetic_Monte_Carlo_Pricer(engine, option, data):
     
     price = discount_rate * payoff_t_antithetic.mean()
     stderr = payoff_t_antithetic.std() / np.sqrt(replications)
-    #hist(z, bins=50)
+    title("Antithetic Monte Carlo")
+    hist(z, bins=50)
     print("The standard error for Antithetic Monte Carlo is: {}".format(stderr))
     
     return price
@@ -256,7 +258,7 @@ def ControlVariatePricer(engine, option, data):
         convar = 0.0
         z = np.random.normal(size=time_steps)
 
-        for i in range(int(engine.time_steps)):
+        for i in range(int(time_steps)):
             t = i * delta_t
             BS_delta = BlackScholesDelta(spot, t, strike, expiry, volatility, rate, dividend)
             spot_tn = spot_t * np.exp(nudt + sigsdt * z[i])
@@ -265,7 +267,8 @@ def ControlVariatePricer(engine, option, data):
 
         cash_flow_t[j] = option.payoff(spot_t) + beta * convar
 
-    #hist(z, bins=50)
+    title("Control Variate Monte Carlo")
+    hist(z, bins=50)
     price = np.exp(-rate * expiry) * cash_flow_t.mean()
     stderr = cash_flow_t.std() / np.sqrt(replications)
     print("The standard error for Control Variate Monte Carlo is: {}".format(stderr))

@@ -16,7 +16,7 @@ def main():
     dividend = 0.0
     
     """Set up the Pricing Engine!"""
-    time_steps = 250
+    time_steps = 10
     replications =1000
     
     call = VanillaPayoff(expiry, strike, call_payoff)
@@ -32,7 +32,7 @@ def main():
     """Naive Monte Carlo"""    
     the_call = VanillaPayoff(expiry, strike, call_payoff)
     the_data = MarketData(rate, spot, volatility, dividend)
-    mc_engine = MonteCarloPricingEngine(time_steps, replications, Naive_Monte_Carlo_Pricer)
+    mc_engine = MonteCarloPricingEngine(replications, time_steps, Naive_Monte_Carlo_Pricer)
     
     the_option = OptionFacade(the_call, mc_engine, the_data)
     MC_price = the_option.price()
