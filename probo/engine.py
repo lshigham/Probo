@@ -3,6 +3,7 @@ import enum
 import numpy as np
 from numpy import matlib
 from scipy.stats import binom, norm, mstats
+from matplotlib.pyplot import *
 
 class PricingEngine(object, metaclass=abc.ABCMeta):
     
@@ -223,6 +224,7 @@ def Antithetic_Monte_Carlo_Pricer(engine, option, data):
     
     price = discount_rate * payoff_t_antithetic.mean()
     stderr = payoff_t_antithetic.std() / np.sqrt(replications)
+    hist(payoff_t_antithetic, bins=50)
     print("The standard error for Antithetic Monte Carlo is: {}".format(stderr))
     
     return price
@@ -306,6 +308,7 @@ def Asian_Option_Pricer(engine, option, data):
 
     price = np.mean(convar_price)
     stderr = np.std(convar_price)
+    hist(convar_price, bins=50)
 
     print("The standard error for Control Variate Monte Carlo simulation for an Arithmetic Asian Call option is: {}".format(stderr))
     

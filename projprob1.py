@@ -17,7 +17,7 @@ def main():
     
     """Set up the Pricing Engine!"""
     time_steps = 50
-    replications =100
+    replications =100000
     
     call = VanillaPayoff(expiry, strike, call_payoff)
     data = MarketData(rate, spot, volatility, dividend)
