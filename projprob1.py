@@ -16,8 +16,8 @@ def main():
     dividend = 0.0
     
     """Set up the Pricing Engine!"""
-    time_steps = 10
-    replications =1000
+    time_steps = 25
+    replications =500
     
     call = VanillaPayoff(expiry, strike, call_payoff)
     data = MarketData(rate, spot, volatility, dividend)
@@ -39,19 +39,19 @@ def main():
     print("The Naive Monte Carlo Call Price is {0:.3f}".format(MC_price))
     
     """Antithetic Monte Carlo"""
-    anti_mc_engine = MonteCarloPricingEngine(time_steps, replications, Antithetic_Monte_Carlo_Pricer)
+    anti_mc_engine = MonteCarloPricingEngine(replications, time_steps, Antithetic_Monte_Carlo_Pricer)
     anti_option = OptionFacade(the_call, anti_mc_engine, the_data)
     anti_price = anti_option.price()
     print("The Antithetic Monte Carlo Call Price is {0:.3f}".format(anti_price))
     
     """Stratified Monte Carlo"""
-    strat_mc_engine = MonteCarloPricingEngine(time_steps, replications, Stratified_Monte_Carlo_Pricer)
+    strat_mc_engine = MonteCarloPricingEngine(replications, time_steps, Stratified_Monte_Carlo_Pricer)
     strat_option = OptionFacade(the_call, strat_mc_engine, the_data)
     strat_price = strat_option.price()
     print("The Stratified Monte Carlo Call Price is {0:.3f}".format(strat_price))
     
     """Control Variate Monte Carlo"""
-    convar_mc_engine = MonteCarloPricingEngine(time_steps, replications, ControlVariatePricer)
+    convar_mc_engine = MonteCarloPricingEngine(replications, time_steps, ControlVariatePricer)
     convar_option = OptionFacade(the_call, convar_mc_engine, the_data)
     convar_price = convar_option.price()
     print("The Call Price via Control Variate Monte Carlo is {0:.3f}".format(convar_price))

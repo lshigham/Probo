@@ -165,8 +165,8 @@ def Naive_Monte_Carlo_Pricer(engine, option, data):
         
     payoff_t = option.payoff(spot_t)
     
-    title("Naive Monte Carlo")
-    hist(z, bins=50)
+    #title("Naive Monte Carlo")
+    #hist(spot_t, bins=50)
     standard_error = payoff_t.std() / np.sqrt(replications)
     price = discount_rate * payoff_t.mean()
     print("The standard error for Naive Monte Carlo is: {}".format(standard_error))
@@ -197,8 +197,8 @@ def Stratified_Monte_Carlo_Pricer(engine, option, data):
         payoff_t[i] = option.payoff(spot_t[i])
         
     price = discount_rate * payoff_t.mean()
-    title("Stratified Monte Carlo")
-    hist(z, bins=50)
+    #title("Stratified Monte Carlo")
+    #hist(spot_t, bins=50)
     standard_error = payoff_t.std(dtype = np.float64) / np.sqrt(replications)
     print("Standard error for the stratified Monte Carlo Call is: {0:3f}".format(standard_error))
 
@@ -213,7 +213,7 @@ def Antithetic_Monte_Carlo_Pricer(engine, option, data):
     replications = engine.replications
     discount_rate = np.exp(-rate * expiry)
     delta_t = expiry 
-    z = np.random.normal(size = time_steps)
+    z = np.random.normal(size = replications)
     z = np.concatenate((z, -z))
 
     nudt = (rate - 0.5 * volatility * volatility) * delta_t
@@ -227,8 +227,8 @@ def Antithetic_Monte_Carlo_Pricer(engine, option, data):
     
     price = discount_rate * payoff_t_antithetic.mean()
     stderr = payoff_t_antithetic.std() / np.sqrt(replications)
-    title("Antithetic Monte Carlo")
-    hist(z, bins=50)
+    #title("Antithetic Monte Carlo")
+    #hist(spot_t_antithetic, bins=50)
     print("The standard error for Antithetic Monte Carlo is: {}".format(stderr))
     
     return price
@@ -256,7 +256,7 @@ def ControlVariatePricer(engine, option, data):
     for j in range(replications):
         spot_t = spot
         convar = 0.0
-        z = np.random.normal(size=time_steps)
+        z = np.random.normal(size = replications)
 
         for i in range(int(time_steps)):
             t = i * delta_t
@@ -268,7 +268,7 @@ def ControlVariatePricer(engine, option, data):
         cash_flow_t[j] = option.payoff(spot_t) + beta * convar
 
     title("Control Variate Monte Carlo")
-    hist(z, bins=50)
+    hist(cash_flow_t, bins=50)
     price = np.exp(-rate * expiry) * cash_flow_t.mean()
     stderr = cash_flow_t.std() / np.sqrt(replications)
     print("The standard error for Control Variate Monte Carlo is: {}".format(stderr))
@@ -293,27 +293,27 @@ def Asian_Option_Pricer(engine, option, data):
     discount_rate = np.exp(-rate * expiry)
     delta_t = expiry / time_steps
     z = np.random.normal(size = (replications, ))
-    beta = -1.0    
     nudt = (rate - 0.5 * volatility * volatility) * delta_t
     sidt = volatility * np.sqrt(delta_t)    
 
     """Path Dependent Portion"""
     expected_return = rate - 0.5 * (volatility * volatility)
-    deterministic = np.matlib.repmat(expected_return * delta_t * time_steps, 1, replications)
+    deterministic = np.matlib.repmat(expected_return * delta_t * time_steps, time_steps, 1)
     stochastic = volatility * np.sqrt(delta_t) * np.cumsum(z)
     spots = np.matlib.repmat(spot, 1, replications)
     sim_paths = spots * np.exp(deterministic + stochastic)
 
     spot_t = np.mean(sim_paths, 1)
     payoff_t = discount_rate * option.payoff(spot_t)
-    exact_G_Asian = GeometricAsian(spot, volatility, strike, rate, expiry, time_steps)
+    convar = GeometricAsian(spot, volatility, strike, rate, expiry, time_steps)
     G_average = np.exp((1/(time_steps +1)) * np.sum(np.log(sim_paths),1))
     payoff_gavg = discount_rate * np.maximum(G_average - strike, 0)
-    convar_price = payoff_t + exact_G_Asian - payoff_gavg
+    convar_price = payoff_t + convar - payoff_gavg
 
     price = np.mean(convar_price)
     stderr = np.std(convar_price)
-    #hist(z, bins=50)
+    title("Geometric Asian Control Variate -- Arithmetic Asian Monte Carlo")    
+    hist(z, bins=50)
 
     print("The standard error for Control Variate Monte Carlo simulation for an Arithmetic Asian Call option is: {}".format(stderr))
     

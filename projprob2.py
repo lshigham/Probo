@@ -70,7 +70,7 @@ def main():
     print("The Stratified Monte Carlo Call Price is {0:.3f}".format(strat_price2))
     
     strat_mc_engine3 = MonteCarloPricingEngine(time_steps, replications, Stratified_Monte_Carlo_Pricer)
-    strat_option3 = OptionFacade(the_call, strat_mc_engine3, the_data)
+    strat_option3 = OptionFacade(the_call3, strat_mc_engine3, the_data)
     strat_price3 = strat_option3.price()
     print("The Stratified Monte Carlo Call Price is {0:.3f}".format(strat_price3))
 
